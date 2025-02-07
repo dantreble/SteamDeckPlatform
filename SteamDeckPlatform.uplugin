@@ -1,0 +1,42 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "SteamDeck Platform",
+	"Description": "Support for various SteamDeck-specific things.",
+	"Category": "Platforms",
+	"CreatedBy": "Feral Cat Den, LLC",
+	"CreatedByURL": "http://feralcatden.com",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"EnabledByDefault": true,
+	"CanContainContent": false,
+	"IsBetaVersion": true,
+	"Installed": false,
+	"SupportedTargetPlatforms": [ "Win64", "Linux" ],
+	"Modules": [
+		{
+			"Name": "SteamDeckConfig",
+			"Type": "Runtime",
+			"LoadingPhase": "EarliestPossible",
+			"PlatformAllowList": [ "Win64", "Linux" ]
+		},
+		{
+			"Name": "SteamDeckDeviceProfileSelector",
+			"Type": "RuntimeNoCommandlet",
+			"LoadingPhase": "PostConfigInit",
+			"PlatformAllowList": [ "Win64", "Linux" ]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "SteamShared",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystemSteam",
+			"Enabled": true
+		}
+	]
+}
