@@ -3,6 +3,7 @@
 #include "SteamDeckConfigModule.h"
 #include "SteamSharedModule.h"
 #include <steam/isteamutils.h>
+#include "Misc/ConfigCacheIni.h"
 
 DEFINE_LOG_CATEGORY(LogSteamDeckConfig);
 
@@ -12,14 +13,19 @@ void FSteamDeckConfigModule::StartupModule()
 	{
 		UE_LOG(LogSteamDeckConfig, Log, TEXT("Applying SteamDeck configs"));
 
-		TArray<FString> ConfigFiles = { TEXT("Engine"), TEXT("Game"), TEXT("Input"), TEXT("DeviceProfiles") };
-		for (const FString& ConfigFile : ConfigFiles)
+		TArray<FName> ConfigFileBaseNames = {  FName("Engine"), FName("Game"), FName("Input"), FName("DeviceProfiles") };
+		for (const FName& ConfigFileBaseName : ConfigFileBaseNames)
 		{
-			FConfigFile* FoundConfig = GConfig->FindConfigFile(ConfigFile);
-			if (FoundConfig)
+			FConfigBranch* FoundBranch = GConfig->FindBranch(ConfigFileBaseName,FString() ); // Pass empty string for filename as we only use the base name to look up the branch
+			if (FoundBranch)
 			{
-				const FString OverrideConfigPath = FPaths::Combine(FPaths::ProjectConfigDir(), "SteamDeck", "SteamDeck" + ConfigFile + ".ini");
-				FoundConfig->AddDynamicLayerToHierarchy(OverrideConfigPath);
+				FString ConfigFileName = ConfigFileBaseName.ToString();
+				const FString OverrideConfigPath = FPaths::Combine(FPaths::ProjectConfigDir(), "SteamDeck", "SteamDeck" + ConfigFileName + ".ini");
+				FoundBranch->AddDynamicLayerToHierarchy(OverrideConfigPath);
+			}
+			else
+			{
+				UE_LOG(LogSteamDeckConfig, Warning, TEXT("Could not find config branch for %s"), *ConfigFileBaseName.ToString());
 			}
 		}
 	}
